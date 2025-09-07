@@ -25,6 +25,7 @@ TestResults/
 
 # Configurações locais
 appsettings.Development.json
+.env
 
 # Uploads e arquivos temporários
 Uploads/

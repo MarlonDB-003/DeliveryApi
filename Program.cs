@@ -57,3 +57,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+// Carrega variáveis do arquivo .env
+DotNetEnv.Env.Load();
