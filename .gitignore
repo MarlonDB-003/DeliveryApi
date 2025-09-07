@@ -1,0 +1,47 @@
+# .gitignore para projeto .NET/ASP.NET Core
+
+# Build
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Database
+*.mdf
+*.ldf
+
+# Test results
+TestResults/
+
+# Configurações locais
+appsettings.Development.json
+
+# Uploads e arquivos temporários
+Uploads/
+*.tmp
+
+# Pacotes
+packages/
+.nuget/
+
+# Arquivos de backup
+*~
+*.bak
+
+# Outros
+.DS_Store
+Thumbs.db
+
+# Rider
+.idea/
+*.sln.iml
