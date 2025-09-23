@@ -69,6 +69,37 @@ namespace Delivery.Controllers
         [HttpPost]
         public async Task<ActionResult<EstablishmentDetailResponseDto>> Add(EstablishmentRegisterDto dto)
         {
+            // Validação dos campos obrigatórios do estabelecimento
+            if (string.IsNullOrWhiteSpace(dto.RestaurantName))
+                return BadRequest("O nome do restaurante é obrigatório.");
+            if (dto.CategoryId == null)
+                return BadRequest("A categoria é obrigatória.");
+            if (dto.OpeningTime == default)
+                return BadRequest("O horário de abertura é obrigatório.");
+            if (dto.ClosingTime == default)
+                return BadRequest("O horário de fechamento é obrigatório.");
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest("O email é obrigatório.");
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest("A senha é obrigatória.");
+            if (dto.Address == null)
+                return BadRequest("O endereço é obrigatório.");
+
+            // Validação dos campos obrigatórios do endereço
+            var addr = dto.Address;
+            if (string.IsNullOrWhiteSpace(addr.Street))
+                return BadRequest("O logradouro do endereço é obrigatório.");
+            if (string.IsNullOrWhiteSpace(addr.Number))
+                return BadRequest("O número do endereço é obrigatório.");
+            if (string.IsNullOrWhiteSpace(addr.Neighborhood))
+                return BadRequest("O bairro do endereço é obrigatório.");
+            if (string.IsNullOrWhiteSpace(addr.City))
+                return BadRequest("A cidade do endereço é obrigatória.");
+            if (string.IsNullOrWhiteSpace(addr.State))
+                return BadRequest("O estado do endereço é obrigatório.");
+            if (string.IsNullOrWhiteSpace(addr.ZipCode))
+                return BadRequest("O CEP do endereço é obrigatório.");
+
             // Criação do usuário
             var user = new User
             {
@@ -80,28 +111,24 @@ namespace Delivery.Controllers
             };
 
             // Criação do endereço
-            Address? address = null;
-            if (dto.Address != null)
+            Address address = new Address
             {
-                address = new Address
-                {
-                    Description = dto.Address.Description,
-                    Street = dto.Address.Street,
-                    Number = dto.Address.Number,
-                    Neighborhood = dto.Address.Neighborhood,
-                    City = dto.Address.City,
-                    State = dto.Address.State,
-                    ZipCode = dto.Address.ZipCode,
-                    Complement = dto.Address.Complement,
-                    IsMain = true // Endereço principal do estabelecimento
-                };
-            }
+                Description = addr.Description,
+                Street = addr.Street,
+                Number = addr.Number,
+                Neighborhood = addr.Neighborhood,
+                City = addr.City,
+                State = addr.State,
+                ZipCode = addr.ZipCode,
+                Complement = addr.Complement,
+                IsMain = true // Endereço principal do estabelecimento
+            };
 
             // Criação do estabelecimento
             var establishment = new Establishment
             {
                 Name = dto.RestaurantName,
-                Address = address != null ? $"{address.Street}, {address.Number}, {address.Neighborhood}, {address.City}" : null,
+                Address = $"{address.Street}, {address.Number}, {address.Neighborhood}, {address.City}",
                 CategoryId = dto.CategoryId,
                 Description = dto.Description,
                 ImageUrl = dto.ImageUrl,
@@ -117,24 +144,9 @@ namespace Delivery.Controllers
                 Products = new List<Product>()
             };
 
-            if (address != null)
-            {
-                establishment.Products = new List<Product>();
-                address.Establishment = establishment;
-                establishment.Address = address.Street + ", " + address.Number + ", " + address.Neighborhood + ", " + address.City;
-                // O Address será salvo em cascade se configurado no contexto, senão, salvar manualmente depois
-                if (establishment.Products == null)
-                    establishment.Products = new List<Product>();
-                if (establishment.User == null)
-                    establishment.User = user;
-                if (establishment.Category == null && dto.CategoryId != null)
-                    establishment.CategoryId = dto.CategoryId;
-            }
+            address.Establishment = establishment;
 
             var created = await _establishmentService.AddEstablishmentAsync(establishment);
-
-            // Se Address não for salvo em cascade, salvar manualmente
-            // (Implementação depende do contexto e repositório)
 
             var dtoResponse = new EstablishmentDetailResponseDto
             {

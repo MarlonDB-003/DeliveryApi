@@ -52,8 +52,6 @@ namespace Delivery.Services
             // Validação básica dos novos campos
             if (string.IsNullOrWhiteSpace(establishment.Name))
                 throw new ArgumentException("Nome do estabelecimento é obrigatório.");
-            if (string.IsNullOrWhiteSpace(establishment.Address))
-                throw new ArgumentException("Endereço do estabelecimento é obrigatório.");
             if (establishment.CategoryId == null)
                 throw new ArgumentException("Categoria do estabelecimento é obrigatória.");
             if (establishment.OpeningTime == default)

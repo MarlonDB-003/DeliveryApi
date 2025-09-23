@@ -1,5 +1,3 @@
-
-
 using Microsoft.EntityFrameworkCore;
 using Delivery.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
@@ -54,6 +52,8 @@ builder.Services.AddAuthentication(options =>
 
 // Adiciona os serviços de autorização necessários
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IAddressService, Delivery.Services.AddressService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IAddressRepository, Delivery.Repositories.AddressRepository>();
 
 var app = builder.Build();
 
