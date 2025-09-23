@@ -1,7 +1,6 @@
-
 # Delivery API
 
-API RESTful desenvolvida em ASP.NET Core 8 para gerenciar um sistema de delivery completo, incluindo autenticação JWT, cadastro de usuários, estabelecimentos, produtos, pedidos, entregadores, pagamentos, cupons, avaliações e categorias.
+API RESTful desenvolvida em ASP.NET Core 8 para gerenciar um sistema de delivery completo, incluindo autenticação JWT, cadastro de usuários, estabelecimentos, produtos, pedidos, entregadores, pagamentos, cupons, avaliações, categorias e endereços.
 
 ---
 
@@ -13,6 +12,7 @@ API RESTful desenvolvida em ASP.NET Core 8 para gerenciar um sistema de delivery
 - [Como Executar](#como-executar)
 - [Endpoints Principais](#endpoints-principais)
 - [Autenticação](#autenticação)
+- [Exemplos de Uso](#exemplos-de-uso)
 - [Testes](#testes)
 - [Observações](#observações)
 
@@ -28,7 +28,7 @@ API RESTful desenvolvida em ASP.NET Core 8 para gerenciar um sistema de delivery
 - Upload de imagens de produtos
 
 ## Estrutura do Projeto
-- `Controllers/` — Endpoints da API para cada recurso (User, Auth, Product, Order, Establishment, etc)
+- `Controllers/` — Endpoints da API para cada recurso (User, Auth, Product, Order, Establishment, Address, etc)
 - `Models/` — Modelos de dados das entidades
 - `Dtos/` — Objetos de transferência de dados (DTOs)
 - `Repositories/` — Camada de acesso a dados
@@ -71,13 +71,13 @@ API RESTful desenvolvida em ASP.NET Core 8 para gerenciar um sistema de delivery
 ## Endpoints Principais
 
 ### Autenticação e Usuários
-- `POST /api/auth/register` — Cadastro de usuário (cliente, restaurante, entregador, admin)
+- `POST /api/auth/register` — Cadastro de usuário (cliente, estabelecimento, entregador, admin)
 - `POST /api/login` — Login e obtenção de token JWT
 - `GET /api/user` — Listar usuários (autenticado)
 - `GET /api/user/{id}` — Detalhes do usuário
 - `DELETE /api/user/{id}` — Remover usuário
 
--### Estabelecimentos, Produtos e Categorias
+### Estabelecimentos, Produtos e Categorias
 - `GET /api/establishment` — Listar estabelecimentos
 - `POST /api/establishment` — Cadastrar estabelecimento
 - `GET /api/product` — Listar produtos
@@ -95,9 +95,9 @@ API RESTful desenvolvida em ASP.NET Core 8 para gerenciar um sistema de delivery
 - `GET /api/review` — Listar avaliações
 - `POST /api/review` — Avaliar pedido/estabelecimento
 
-### Outros
+### Endereços e Entregadores
 - `GET /api/address` — Listar endereços
-- `POST /api/address` — Cadastrar endereço
+- `POST /api/address` — Cadastrar endereço (usuário ou estabelecimento)
 - `GET /api/deliveryperson` — Listar entregadores
 - `POST /api/deliveryperson` — Cadastrar entregador
 
@@ -115,8 +115,19 @@ POST /api/login
 }
 ```
 
-### Exemplo de cadastro de estabelecimento
-Para registrar um estabelecimento, envie para `/api/auth/register`:
+## Exemplos de Uso
+
+### Cadastro de usuário cliente
+```json
+{
+  "name": "Maria Souza",
+  "email": "maria@exemplo.com",
+  "password": "senha123",
+  "role": "cliente"
+}
+```
+
+### Cadastro de estabelecimento
 ```json
 {
   "name": "João da Silva",
@@ -142,6 +153,22 @@ Para registrar um estabelecimento, envie para `/api/auth/register`:
   "hasDeliveryPerson": true,
   "minimumOrderValue": 30.00,
   "deliveryFee": 5.00
+}
+```
+
+### Cadastro de endereço para usuário
+```json
+{
+  "userId": 1,
+  "description": "Casa",
+  "street": "Rua das Flores",
+  "number": "123",
+  "neighborhood": "Centro",
+  "city": "Cidade Exemplo",
+  "state": "EX",
+  "zipCode": "12345-678",
+  "complement": "Apto 101",
+  "isMain": true
 }
 ```
 
