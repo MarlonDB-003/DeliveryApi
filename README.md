@@ -119,12 +119,29 @@ POST /api/login
 Para registrar um estabelecimento, envie para `/api/auth/register`:
 ```json
 {
-   "name": "João da Silva",
-   "email": "joao@restaurante.com",
-   "password": "SenhaForte123!",
-   "role": "estabelecimento",
-   "restaurantName": "Restaurante Sabor Caseiro",
-   "restaurantAddress": "Rua das Flores, 123, Centro, Cidade"
+  "name": "João da Silva",
+  "email": "joao@restaurante.com",
+  "password": "SenhaForte123!",
+  "role": "estabelecimento",
+  "restaurantName": "Restaurante Sabor Caseiro",
+  "address": {
+    "description": "Matriz",
+    "street": "Rua das Flores",
+    "number": "123",
+    "neighborhood": "Centro",
+    "city": "Cidade",
+    "state": "UF",
+    "zipCode": "12345-678",
+    "complement": "Próximo à praça"
+  },
+  "categoryId": 1,
+  "description": "Comida caseira e delivery rápido",
+  "imageUrl": "https://exemplo.com/imagem.jpg",
+  "openingTime": "08:00:00",
+  "closingTime": "22:00:00",
+  "hasDeliveryPerson": true,
+  "minimumOrderValue": 30.00,
+  "deliveryFee": 5.00
 }
 ```
 
