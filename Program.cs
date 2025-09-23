@@ -11,9 +11,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-// Configuração do DbContext para Supabase/PostgreSQL
+
+// Carrega variáveis do arquivo .env antes de qualquer configuração
+DotNetEnv.Env.Load();
+
+// Monta a connection string dinamicamente usando variáveis de ambiente
+string dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+string dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+string dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "postgres";
+string dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";
+string dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
+string dbSslMode = Environment.GetEnvironmentVariable("DB_SSLMODE") ?? "Require";
+
+string connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword};SslMode={dbSslMode}";
+
 builder.Services.AddDbContext<Delivery.Data.DeliveryContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Delivery.Mapping.AutoMapperProfile));

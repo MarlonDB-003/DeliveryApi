@@ -42,15 +42,15 @@ namespace Delivery.Controllers
                 return Conflict("Email já cadastrado.");
 
             var role = dto.Role?.ToLower() ?? "cliente";
-            if (role != "cliente" && role != "restaurante" && role != "entregador" && role != "admin")
-                return BadRequest("Role inválido. Use: cliente, restaurante, entregador ou admin.");
+            if (role != "cliente" && role != "estabelecimento" && role != "entregador" && role != "admin")
+                return BadRequest("Role inválido. Use: cliente, estabelecimento, entregador ou admin.");
 
             // Validações específicas por tipo
-            if (role == "restaurante")
+            if (role == "estabelecimento")
             {
                 if (string.IsNullOrWhiteSpace(dto.RestaurantName) || string.IsNullOrWhiteSpace(dto.RestaurantAddress))
-                    return BadRequest("Restaurante: nome e endereço são obrigatórios.");
-                // Aqui você pode criar o registro do restaurante e vincular ao usuário
+                    return BadRequest("Estabelecimento: nome e endereço são obrigatórios.");
+                // Aqui você pode criar o registro do estabelecimento e vincular ao usuário
             }
             if (role == "entregador")
             {
@@ -70,12 +70,12 @@ namespace Delivery.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            object? restaurante = null;
+            object? estabelecimento = null;
             object? entregador = null;
 
-            if (role == "restaurante")
+            if (role == "estabelecimento")
             {
-                var rest = new Restaurant
+                var est = new Establishment
                 {
                     Name = dto.RestaurantName!,
                     Address = dto.RestaurantAddress!,
@@ -84,9 +84,9 @@ namespace Delivery.Controllers
                     CreatedAt = DateTime.UtcNow,
                     UserId = user.Id
                 };
-                _context.Restaurants.Add(rest);
+                _context.Establishments.Add(est);
                 _context.SaveChanges();
-                restaurante = new { rest.Id, rest.Name, rest.Address, rest.UserId };
+                estabelecimento = new { est.Id, est.Name, est.Address, est.UserId };
             }
             if (role == "entregador")
             {
@@ -111,7 +111,7 @@ namespace Delivery.Controllers
                 user.Name,
                 user.Email,
                 user.Role,
-                Restaurante = restaurante,
+                Estabelecimento = estabelecimento,
                 Entregador = entregador
             });
             // ...existing code...
@@ -131,9 +131,9 @@ namespace Delivery.Controllers
         public string? Password { get; set; }
         public string? Role { get; set; }
 
-        // Dados específicos para restaurante
-        public string? RestaurantName { get; set; }
-        public string? RestaurantAddress { get; set; }
+    // Dados específicos para estabelecimento
+    public string? RestaurantName { get; set; }
+    public string? RestaurantAddress { get; set; }
 
         // Dados específicos para entregador
         public string? DeliveryPhone { get; set; }
