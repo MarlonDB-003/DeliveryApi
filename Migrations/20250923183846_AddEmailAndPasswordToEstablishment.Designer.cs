@@ -3,6 +3,7 @@ using System;
 using Delivery.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace delivery.Migrations
 {
     [DbContext(typeof(DeliveryContext))]
-    partial class DeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250923183846_AddEmailAndPasswordToEstablishment")]
+    partial class AddEmailAndPasswordToEstablishment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,41 +34,44 @@ namespace delivery.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Complement")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("EstablishmentId")
-                        .HasColumnType("integer");
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Neighborhood")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Number")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("State")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ZipCode")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EstablishmentId");
 
                     b.HasIndex("UserId");
 
@@ -426,15 +432,11 @@ namespace delivery.Migrations
 
             modelBuilder.Entity("Delivery.Models.Address", b =>
                 {
-                    b.HasOne("Delivery.Models.Establishment", "Establishment")
-                        .WithMany()
-                        .HasForeignKey("EstablishmentId");
-
                     b.HasOne("Delivery.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Establishment");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -50,16 +50,20 @@ namespace Delivery.Services
 
         public async Task<Address> AddAddressAsync(Address address)
         {
+
             // Validação básica
-            if (address.UserId <= 0)
-                throw new ArgumentException("Usuário do endereço é obrigatório.");
+            if ((address.UserId == null || address.UserId <= 0) && (address.EstablishmentId == null || address.EstablishmentId <= 0))
+                throw new ArgumentException("Usuário ou estabelecimento do endereço é obrigatório.");
             if (string.IsNullOrWhiteSpace(address.Description))
                 throw new ArgumentException("Descrição do endereço é obrigatória.");
 
             // Regra de negócio: não permitir endereço duplicado para o mesmo usuário e descrição
-            var existing = await _addressRepository.FindByUserAndDescriptionAsync(address.UserId, address.Description);
-            if (existing != null)
-                throw new InvalidOperationException("Endereço já cadastrado para este usuário.");
+            if (address.UserId != null && address.UserId > 0)
+            {
+                var existing = await _addressRepository.FindByUserAndDescriptionAsync(address.UserId.Value, address.Description);
+                if (existing != null)
+                    throw new InvalidOperationException("Endereço já cadastrado para este usuário.");
+            }
 
             try
             {

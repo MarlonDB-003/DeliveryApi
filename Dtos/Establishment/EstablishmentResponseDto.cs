@@ -13,5 +13,6 @@ namespace Delivery.Dtos.Establishment
     public bool HasDeliveryPerson { get; set; }
     public decimal MinimumOrderValue { get; set; }
     public decimal DeliveryFee { get; set; }
+    public string? Email { get; set; }
     }
 }

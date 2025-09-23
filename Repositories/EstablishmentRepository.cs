@@ -29,6 +29,20 @@ namespace Delivery.Repositories
         {
             _context.Establishments.Add(establishment);
             await _context.SaveChangesAsync();
+
+            // Salvar Address manualmente se existir e não foi salvo em cascade
+            if (establishment.User != null && establishment.User.Id > 0 && establishment.Address != null)
+            {
+                var address = new Address
+                {
+                    Description = establishment.Address,
+                    EstablishmentId = establishment.Id,
+                    IsMain = true
+                };
+                _context.Addresses.Add(address);
+                await _context.SaveChangesAsync();
+            }
+
             return establishment;
         }
 
