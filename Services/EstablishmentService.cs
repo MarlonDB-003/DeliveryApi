@@ -49,11 +49,21 @@ namespace Delivery.Services
 
         public async Task<Establishment> AddEstablishmentAsync(Establishment establishment)
         {
-            // Validação básica
+            // Validação básica dos novos campos
             if (string.IsNullOrWhiteSpace(establishment.Name))
                 throw new ArgumentException("Nome do estabelecimento é obrigatório.");
             if (string.IsNullOrWhiteSpace(establishment.Address))
                 throw new ArgumentException("Endereço do estabelecimento é obrigatório.");
+            if (establishment.CategoryId == null)
+                throw new ArgumentException("Categoria do estabelecimento é obrigatória.");
+            if (establishment.OpeningTime == default)
+                throw new ArgumentException("Horário de abertura é obrigatório.");
+            if (establishment.ClosingTime == default)
+                throw new ArgumentException("Horário de fechamento é obrigatório.");
+            if (establishment.MinimumOrderValue < 0)
+                throw new ArgumentException("Valor mínimo para pedido não pode ser negativo.");
+            if (establishment.DeliveryFee < 0)
+                throw new ArgumentException("Taxa de entrega não pode ser negativa.");
 
             try
             {

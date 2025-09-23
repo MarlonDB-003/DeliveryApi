@@ -22,6 +22,8 @@ namespace Delivery.Mapping
 			CreateMap<User, UserDto>().ReverseMap();
 			CreateMap<Product, ProductDto>().ReverseMap();
 			CreateMap<Establishment, EstablishmentDto>().ReverseMap();
+			CreateMap<Establishment, EstablishmentResponseDto>().ReverseMap();
+			CreateMap<Establishment, EstablishmentDetailResponseDto>().ReverseMap();
 			CreateMap<Order, OrderDto>().ReverseMap();
 			CreateMap<Address, AddressDto>().ReverseMap();
 			CreateMap<DeliveryPerson, DeliveryPersonDto>().ReverseMap();
