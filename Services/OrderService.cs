@@ -53,8 +53,8 @@ namespace Delivery.Services
             // Validação básica
             if (order.UserId <= 0)
                 throw new ArgumentException("Usuário do pedido é obrigatório.");
-            if (order.RestaurantId <= 0)
-                throw new ArgumentException("Restaurante do pedido é obrigatório.");
+            if (order.EstablishmentId <= 0)
+                throw new ArgumentException("Estabelecimento do pedido é obrigatório.");
             if (order.OrderItems == null || order.OrderItems.Count == 0)
                 throw new ArgumentException("Pedido deve conter ao menos um item.");
 

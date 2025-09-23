@@ -7,7 +7,7 @@ namespace Delivery.Models
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
-        public int RestaurantId { get; set; }
-        public Restaurant? Restaurant { get; set; }
+    public int EstablishmentId { get; set; }
+    public Establishment? Establishment { get; set; }
     }
 }

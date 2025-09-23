@@ -3,9 +3,9 @@ using Delivery.Dtos.Address;
 using Delivery.Dtos.Product;
 using Delivery.Dtos.Category;
 
-namespace Delivery.Dtos.Restaurant
+namespace Delivery.Dtos.Establishment
 {
-    public class RestaurantDetailResponseDto
+    public class EstablishmentDetailResponseDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }

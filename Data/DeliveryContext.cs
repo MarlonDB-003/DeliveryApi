@@ -8,7 +8,7 @@ namespace Delivery.Data
         public DeliveryContext(DbContextOptions<DeliveryContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Restaurant> Restaurants { get; set; }
+    public DbSet<Establishment> Establishments { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }

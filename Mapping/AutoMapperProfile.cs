@@ -3,7 +3,7 @@ using AutoMapper;
 using Delivery.Models;
 using Delivery.Dtos.User;
 using Delivery.Dtos.Product;
-using Delivery.Dtos.Restaurant;
+using Delivery.Dtos.Establishment;
 using Delivery.Dtos.Order;
 using Delivery.Dtos.Address;
 using Delivery.Dtos.Delivery;
@@ -21,7 +21,7 @@ namespace Delivery.Mapping
 			// Exemplos de mapeamento
 			CreateMap<User, UserDto>().ReverseMap();
 			CreateMap<Product, ProductDto>().ReverseMap();
-			CreateMap<Restaurant, RestaurantDto>().ReverseMap();
+			CreateMap<Establishment, EstablishmentDto>().ReverseMap();
 			CreateMap<Order, OrderDto>().ReverseMap();
 			CreateMap<Address, AddressDto>().ReverseMap();
 			CreateMap<DeliveryPerson, DeliveryPersonDto>().ReverseMap();

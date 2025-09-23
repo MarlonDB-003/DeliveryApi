@@ -1,6 +1,6 @@
-namespace Delivery.Dtos.Restaurant
+namespace Delivery.Dtos.Establishment
 {
-    public class RestaurantDto
+    public class EstablishmentDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
