@@ -54,5 +54,9 @@ namespace Delivery.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> CategoryExistsAsync(int categoryId)
+        {
+            return await _context.Categories.AnyAsync(c => c.Id == categoryId);
+        }
     }
 }

@@ -53,6 +53,8 @@ namespace Delivery.Services
             // Validação básica
             if (string.IsNullOrWhiteSpace(category.Name))
                 throw new ArgumentException("Nome da categoria é obrigatório.");
+            if (string.IsNullOrWhiteSpace(category.Description))
+                throw new ArgumentException("Descrição da categoria é obrigatória.");
 
             // Regra de negócio: não permitir categoria duplicada por nome
             var existing = await _categoryRepository.FindByNameAsync(category.Name);

@@ -9,9 +9,14 @@ namespace Delivery.Services.Interfaces
     /// </summary>
     public interface IEstablishmentService
     {
-        Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync();
-        Task<Establishment?> GetEstablishmentByIdAsync(int id);
-        Task<Establishment> AddEstablishmentAsync(Establishment establishment);
-        Task<bool> DeleteEstablishmentAsync(int id);
+    Task<IEnumerable<Establishment>> GetAllEstablishmentsAsync();
+    Task<Establishment?> GetEstablishmentByIdAsync(int id);
+    Task<Establishment> AddEstablishmentAsync(Establishment establishment);
+    Task<bool> DeleteEstablishmentAsync(int id);
+
+    /// <summary>
+    /// Cadastra um estabelecimento e seu endereço completo
+    /// </summary>
+    Task<Establishment> RegisterEstablishmentAsync(Delivery.Dtos.Establishment.EstablishmentRegisterDto dto, int userId);
     }
 }

@@ -29,7 +29,6 @@ builder.Services.AddDbContext<Delivery.Data.DeliveryContext>(options =>
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Delivery.Mapping.AutoMapperProfile));
 
-
 // JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -45,8 +44,9 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = "DeliveryApi",
-            ValidAudience = "DeliveryApiUsers",
-            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("SuperSecretKey@345SuperSecretKey@345SuperSecretKey@345!"))
+            ValidAudience = "DeliveryApi",
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("SuperSecretKey@345SuperSecretKey@345SuperSecretKey@345!")),
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         };
     });
 
@@ -54,6 +54,12 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<Delivery.Services.Interfaces.IAddressService, Delivery.Services.AddressService>();
 builder.Services.AddScoped<Delivery.Repositories.Interfaces.IAddressRepository, Delivery.Repositories.AddressRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IEstablishmentService, Delivery.Services.EstablishmentService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IEstablishmentRepository, Delivery.Repositories.EstablishmentRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IUserService, Delivery.Services.UserService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IUserRepository, Delivery.Repositories.UserRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.ICategoryService, Delivery.Services.CategoryService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.ICategoryRepository, Delivery.Repositories.CategoryRepository>();
 
 var app = builder.Build();
 

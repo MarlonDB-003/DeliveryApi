@@ -130,11 +130,7 @@ POST /api/login
 ### Cadastro de estabelecimento
 ```json
 {
-  "name": "João da Silva",
-  "email": "joao@restaurante.com",
-  "password": "SenhaForte123!",
-  "role": "estabelecimento",
-  "restaurantName": "Restaurante Sabor Caseiro",
+  "establishmentName": "Restaurante Sabor Caseiro",
   "address": {
     "description": "Matriz",
     "street": "Rua das Flores",

@@ -34,6 +34,7 @@ namespace Delivery.Controllers
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email ?? ""),
                 new Claim(ClaimTypes.Role, user.Role ?? "cliente")
             };
@@ -43,7 +44,7 @@ namespace Delivery.Controllers
 
             var token = new JwtSecurityToken(
                 issuer: "DeliveryApi",
-                audience: "DeliveryApiUsers",
+                audience: "DeliveryApi",
                 claims: claims,
                 expires: DateTime.Now.AddHours(2),
                 signingCredentials: creds
