@@ -31,5 +31,10 @@ namespace Delivery.Repositories.Interfaces
     /// Busca um produto pelo nome
     /// </summary>
     Task<Product?> FindByNameAsync(string name);
+
+    /// <summary>
+    /// Busca um produto pelo nome e estabelecimento
+    /// </summary>
+    Task<Product?> FindByNameAndEstablishmentAsync(string name, int establishmentId);
     }
 }

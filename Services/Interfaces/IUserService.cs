@@ -7,8 +7,12 @@ namespace Delivery.Services.Interfaces
     /// <summary>
     /// Interface para serviço de usuários
     /// </summary>
-    public interface IUserService
-    {
+        public interface IUserService
+        {
+            /// <summary>
+            /// Autentica o usuário e retorna o token JWT
+            /// </summary>
+            string AuthenticateUserAndGenerateToken(Delivery.Controllers.UserLoginDto dto);
         /// <summary>
         /// Retorna todos os usuários
         /// </summary>
@@ -22,7 +26,12 @@ namespace Delivery.Services.Interfaces
         /// <summary>
         /// Adiciona um novo usuário
         /// </summary>
-        Task<User> AddUserAsync(User user);
+    Task<User> AddUserAsync(User user);
+
+    /// <summary>
+    /// Cadastra um novo usuário a partir do DTO, realizando todas as validações e regras de negócio
+    /// </summary>
+    Task<User> RegisterUserAsync(Delivery.Controllers.RegisterUserDto dto);
 
         /// <summary>
         /// Remove um usuário pelo ID

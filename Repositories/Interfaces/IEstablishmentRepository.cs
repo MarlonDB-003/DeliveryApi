@@ -22,9 +22,19 @@ namespace Delivery.Repositories.Interfaces
         /// </summary>
         Task<Establishment> AddAsync(Establishment establishment);
 
+    /// <summary>
+    /// Remove um estabelecimento pelo ID
+    /// </summary>
+    Task<bool> DeleteAsync(int id);
+
         /// <summary>
-        /// Remove um estabelecimento pelo ID
+        /// Verifica se uma categoria existe pelo ID
         /// </summary>
-        Task<bool> DeleteAsync(int id);
+        Task<bool> CategoryExistsAsync(int categoryId);
+
+        /// <summary>
+        /// Busca um estabelecimento pelo ID do usuário
+        /// </summary>
+        Task<Establishment?> GetByUserIdAsync(int userId);
     }
 }

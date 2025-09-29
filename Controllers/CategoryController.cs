@@ -22,7 +22,12 @@ namespace Delivery.Controllers
         public async Task<ActionResult<IEnumerable<Category>>> GetAll()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
-            return Ok(categories);
+            var dtos = categories.Select(c => new Delivery.Dtos.Category.CategoryResponseDto {
+                Id = c.Id,
+                Name = c.Name,
+                Description = c.Description
+            });
+            return Ok(dtos);
         }
 
         [HttpGet("{id}")]
@@ -30,14 +35,24 @@ namespace Delivery.Controllers
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
             if (category == null) return NotFound();
-            return Ok(category);
+            var dto = new Delivery.Dtos.Category.CategoryDetailResponseDto {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description
+            };
+            return Ok(dto);
         }
 
         [HttpPost]
         public async Task<ActionResult<Category>> Add(Category category)
         {
             var created = await _categoryService.AddCategoryAsync(category);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            var dto = new Delivery.Dtos.Category.CategoryResponseDto {
+                Id = created.Id,
+                Name = created.Name,
+                Description = created.Description
+            };
+            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, dto);
         }
 
         [HttpDelete("{id}")]

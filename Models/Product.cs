@@ -7,7 +7,10 @@ namespace Delivery.Models
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
-    public int EstablishmentId { get; set; }
-    public Establishment? Establishment { get; set; }
+        public int EstablishmentId { get; set; }
+        public Establishment? Establishment { get; set; }
+        public int CategoryId { get; set; }
+        public Category? Category { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

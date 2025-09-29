@@ -13,5 +13,6 @@ namespace Delivery.Services.Interfaces
         Task<Product?> GetProductByIdAsync(int id);
         Task<Product> AddProductAsync(Product product);
         Task<bool> DeleteProductAsync(int id);
+        Task<Product> CreateProductAsync(Delivery.Dtos.Product.ProductCreateDto dto, int userId);
     }
 }

@@ -12,18 +12,20 @@ namespace Delivery.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IEstablishmentRepository _establishmentRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly ILogger<ProductService> _logger;
-        private IProductRepository @object;
 
-        public ProductService(IProductRepository productRepository, ILogger<ProductService> logger)
+        public ProductService(
+            IProductRepository productRepository, 
+            IEstablishmentRepository establishmentRepository,
+            ICategoryRepository categoryRepository,
+            ILogger<ProductService> logger)
         {
             _productRepository = productRepository;
+            _establishmentRepository = establishmentRepository;
+            _categoryRepository = categoryRepository;
             _logger = logger;
-        }
-
-        public ProductService(IProductRepository @object)
-        {
-            this.@object = @object;
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
@@ -74,6 +76,58 @@ namespace Delivery.Services
                 return created;
             }
             catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao criar produto.");
+                throw new ApplicationException("Erro ao criar produto.");
+            }
+        }
+
+        public async Task<Product> CreateProductAsync(Delivery.Dtos.Product.ProductCreateDto dto, int userId)
+        {
+            // Validação dos campos obrigatórios
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ArgumentException("O nome do produto é obrigatório.");
+            if (string.IsNullOrWhiteSpace(dto.Description))
+                throw new ArgumentException("A descrição do produto é obrigatória.");
+            if (dto.Price <= 0)
+                throw new ArgumentException("O preço do produto deve ser maior que zero.");
+            if (dto.CategoryId <= 0)
+                throw new ArgumentException("A categoria do produto é obrigatória.");
+
+            try
+            {
+                // Busca o estabelecimento do usuário logado
+                var establishment = await _establishmentRepository.GetByUserIdAsync(userId);
+                if (establishment == null)
+                    throw new InvalidOperationException("Usuário não possui estabelecimento cadastrado.");
+
+                // Validação se a categoria existe
+                var categoryExists = await _categoryRepository.GetByIdAsync(dto.CategoryId);
+                if (categoryExists == null)
+                    throw new ArgumentException("A categoria informada não existe.");
+
+                // Verifica se já existe produto com o mesmo nome no estabelecimento
+                var existingProduct = await _productRepository.FindByNameAndEstablishmentAsync(dto.Name, establishment.Id);
+                if (existingProduct != null)
+                    throw new InvalidOperationException("Já existe um produto com este nome neste estabelecimento.");
+
+                // Cria o produto
+                var product = new Product
+                {
+                    Name = dto.Name,
+                    Description = dto.Description,
+                    Price = dto.Price,
+                    ImageUrl = dto.ImageUrl,
+                    CategoryId = dto.CategoryId,
+                    EstablishmentId = establishment.Id,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                var created = await _productRepository.AddAsync(product);
+                _logger.LogInformation($"Produto criado: {created.Id} - {created.Name} para estabelecimento {establishment.Id}");
+                return created;
+            }
+            catch (Exception ex) when (!(ex is ArgumentException || ex is InvalidOperationException))
             {
                 _logger.LogError(ex, "Erro ao criar produto.");
                 throw new ApplicationException("Erro ao criar produto.");

@@ -8,9 +8,9 @@ using Delivery.Dtos.Establishment;
 
 namespace Delivery.Controllers
 {
-    [ApiController]
-    [Authorize]
-    [Route("api/[controller]")]
+        [ApiController]
+        [Authorize(Roles = "estabelecimento")]
+        [Route("api/[controller]")]
     public class EstablishmentController : ControllerBase
     {
         private readonly IEstablishmentService _establishmentService;
@@ -27,7 +27,7 @@ namespace Delivery.Controllers
             var dtos = establishments.Select(e => new EstablishmentDetailResponseDto
             {
                 Id = e.Id,
-                Name = e.Name,
+                Name = e.EstablishmentName,
                 Description = e.Description,
                 ImageUrl = e.ImageUrl,
                 Address = e.Address,
@@ -37,7 +37,6 @@ namespace Delivery.Controllers
                 HasDeliveryPerson = e.HasDeliveryPerson,
                 MinimumOrderValue = e.MinimumOrderValue,
                 DeliveryFee = e.DeliveryFee,
-                Email = e.Email
             }).ToList();
             return Ok(dtos);
         }
@@ -51,7 +50,7 @@ namespace Delivery.Controllers
             var dto = new EstablishmentDetailResponseDto
             {
                 Id = establishment.Id,
-                Name = establishment.Name,
+                Name = establishment.EstablishmentName,
                 Description = establishment.Description,
                 ImageUrl = establishment.ImageUrl,
                 Address = establishment.Address,
@@ -61,7 +60,6 @@ namespace Delivery.Controllers
                 HasDeliveryPerson = establishment.HasDeliveryPerson,
                 MinimumOrderValue = establishment.MinimumOrderValue,
                 DeliveryFee = establishment.DeliveryFee,
-                Email = establishment.Email
             };
             return Ok(dto);
         }
@@ -69,101 +67,40 @@ namespace Delivery.Controllers
         [HttpPost]
         public async Task<ActionResult<EstablishmentDetailResponseDto>> Add(EstablishmentRegisterDto dto)
         {
-            // Validação dos campos obrigatórios do estabelecimento
-            if (string.IsNullOrWhiteSpace(dto.RestaurantName))
-                return BadRequest("O nome do restaurante é obrigatório.");
-            if (dto.CategoryId == null)
-                return BadRequest("A categoria é obrigatória.");
-            if (dto.OpeningTime == default)
-                return BadRequest("O horário de abertura é obrigatório.");
-            if (dto.ClosingTime == default)
-                return BadRequest("O horário de fechamento é obrigatório.");
-            if (string.IsNullOrWhiteSpace(dto.Email))
-                return BadRequest("O email é obrigatório.");
-            if (string.IsNullOrWhiteSpace(dto.Password))
-                return BadRequest("A senha é obrigatória.");
-            if (dto.Address == null)
-                return BadRequest("O endereço é obrigatório.");
+            // Recupera o id do usuário logado via token JWT
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Usuário não autenticado.");
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+                return BadRequest("Id do usuário inválido.");
 
-            // Validação dos campos obrigatórios do endereço
-            var addr = dto.Address;
-            if (string.IsNullOrWhiteSpace(addr.Street))
-                return BadRequest("O logradouro do endereço é obrigatório.");
-            if (string.IsNullOrWhiteSpace(addr.Number))
-                return BadRequest("O número do endereço é obrigatório.");
-            if (string.IsNullOrWhiteSpace(addr.Neighborhood))
-                return BadRequest("O bairro do endereço é obrigatório.");
-            if (string.IsNullOrWhiteSpace(addr.City))
-                return BadRequest("A cidade do endereço é obrigatória.");
-            if (string.IsNullOrWhiteSpace(addr.State))
-                return BadRequest("O estado do endereço é obrigatório.");
-            if (string.IsNullOrWhiteSpace(addr.ZipCode))
-                return BadRequest("O CEP do endereço é obrigatório.");
-
-            // Criação do usuário
-            var user = new User
+            try
             {
-                Name = dto.Name,
-                Email = dto.Email,
-                PasswordHash = dto.Password, // Ideal: aplicar hash seguro
-                Role = dto.Role,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            // Criação do endereço
-            Address address = new Address
+                var created = await _establishmentService.RegisterEstablishmentAsync(dto, userId);
+                var dtoResponse = new EstablishmentDetailResponseDto
+                {
+                    Id = created.Id,
+                    Name = created.EstablishmentName,
+                    Description = created.Description,
+                    ImageUrl = created.ImageUrl,
+                    Address = created.Address,
+                    CategoryId = created.CategoryId,
+                    OpeningTime = created.OpeningTime,
+                    ClosingTime = created.ClosingTime,
+                    HasDeliveryPerson = created.HasDeliveryPerson,
+                    MinimumOrderValue = created.MinimumOrderValue,
+                    DeliveryFee = created.DeliveryFee
+                };
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, dtoResponse);
+            }
+            catch (ArgumentException ex)
             {
-                Description = addr.Description,
-                Street = addr.Street,
-                Number = addr.Number,
-                Neighborhood = addr.Neighborhood,
-                City = addr.City,
-                State = addr.State,
-                ZipCode = addr.ZipCode,
-                Complement = addr.Complement,
-                IsMain = true // Endereço principal do estabelecimento
-            };
-
-            // Criação do estabelecimento
-            var establishment = new Establishment
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
             {
-                Name = dto.RestaurantName,
-                Address = $"{address.Street}, {address.Number}, {address.Neighborhood}, {address.City}",
-                CategoryId = dto.CategoryId,
-                Description = dto.Description,
-                ImageUrl = dto.ImageUrl,
-                OpeningTime = dto.OpeningTime,
-                ClosingTime = dto.ClosingTime,
-                HasDeliveryPerson = dto.HasDeliveryPerson,
-                MinimumOrderValue = dto.MinimumOrderValue,
-                DeliveryFee = dto.DeliveryFee,
-                Email = dto.Email,
-                PasswordHash = dto.Password, // Ideal: aplicar hash seguro
-                CreatedAt = DateTime.UtcNow,
-                User = user,
-                Products = new List<Product>()
-            };
-
-            address.Establishment = establishment;
-
-            var created = await _establishmentService.AddEstablishmentAsync(establishment);
-
-            var dtoResponse = new EstablishmentDetailResponseDto
-            {
-                Id = created.Id,
-                Name = created.Name,
-                Description = created.Description,
-                ImageUrl = created.ImageUrl,
-                Address = created.Address,
-                CategoryId = created.CategoryId,
-                OpeningTime = created.OpeningTime,
-                ClosingTime = created.ClosingTime,
-                HasDeliveryPerson = created.HasDeliveryPerson,
-                MinimumOrderValue = created.MinimumOrderValue,
-                DeliveryFee = created.DeliveryFee,
-                Email = created.Email
-            };
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, dtoResponse);
+                return StatusCode(500, $"Erro ao cadastrar estabelecimento: {ex.Message}");
+            }
         }
 
         [HttpDelete("{id}")]

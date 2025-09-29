@@ -45,5 +45,11 @@ namespace Delivery.Repositories
         {
             return await _context.Products.FirstOrDefaultAsync(p => p.Name == name);
         }
+
+        public async Task<Product?> FindByNameAndEstablishmentAsync(string name, int establishmentId)
+        {
+            return await _context.Products
+                .FirstOrDefaultAsync(p => p.Name == name && p.EstablishmentId == establishmentId);
+        }
     }
 }

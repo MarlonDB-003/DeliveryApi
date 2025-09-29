@@ -7,7 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configuração para lidar com ciclos de referência
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 
 
 // Carrega variáveis do arquivo .env antes de qualquer configuração
@@ -29,7 +35,6 @@ builder.Services.AddDbContext<Delivery.Data.DeliveryContext>(options =>
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Delivery.Mapping.AutoMapperProfile));
 
-
 // JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -45,8 +50,9 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = "DeliveryApi",
-            ValidAudience = "DeliveryApiUsers",
-            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("SuperSecretKey@345SuperSecretKey@345SuperSecretKey@345!"))
+            ValidAudience = "DeliveryApi",
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("SuperSecretKey@345SuperSecretKey@345SuperSecretKey@345!")),
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         };
     });
 
@@ -54,6 +60,18 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<Delivery.Services.Interfaces.IAddressService, Delivery.Services.AddressService>();
 builder.Services.AddScoped<Delivery.Repositories.Interfaces.IAddressRepository, Delivery.Repositories.AddressRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IEstablishmentService, Delivery.Services.EstablishmentService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IEstablishmentRepository, Delivery.Repositories.EstablishmentRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IUserService, Delivery.Services.UserService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IUserRepository, Delivery.Repositories.UserRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.ICategoryService, Delivery.Services.CategoryService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.ICategoryRepository, Delivery.Repositories.CategoryRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IProductService, Delivery.Services.ProductService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IProductRepository, Delivery.Repositories.ProductRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IOrderService, Delivery.Services.OrderService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IOrderRepository, Delivery.Repositories.OrderRepository>();
+builder.Services.AddScoped<Delivery.Services.Interfaces.IOrderService, Delivery.Services.OrderService>();
+builder.Services.AddScoped<Delivery.Repositories.Interfaces.IOrderRepository, Delivery.Repositories.OrderRepository>();
 
 var app = builder.Build();
 

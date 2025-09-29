@@ -3,7 +3,7 @@ namespace Delivery.Models
     public class Establishment
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
+    public string? EstablishmentName { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public string? Address { get; set; }
@@ -24,7 +24,5 @@ namespace Delivery.Models
         public decimal DeliveryFee { get; set; }
 
         // Campos de autenticação
-        public string? Email { get; set; }
-        public string? PasswordHash { get; set; }
     }
 }

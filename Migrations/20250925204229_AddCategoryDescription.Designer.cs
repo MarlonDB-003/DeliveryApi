@@ -3,6 +3,7 @@ using System;
 using Delivery.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace delivery.Migrations
 {
     [DbContext(typeof(DeliveryContext))]
-    partial class DeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250925204229_AddCategoryDescription")]
+    partial class AddCategoryDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,6 +187,9 @@ namespace delivery.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<string>("EstablishmentName")
                         .HasColumnType("text");
 
@@ -198,6 +204,9 @@ namespace delivery.Migrations
 
                     b.Property<TimeSpan>("OpeningTime")
                         .HasColumnType("interval");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
@@ -222,45 +231,14 @@ namespace delivery.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DeliveredAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeliveryAddress")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("DeliveryFee")
-                        .HasColumnType("numeric");
-
                     b.Property<int?>("DeliveryPersonId")
                         .HasColumnType("integer");
 
                     b.Property<int>("EstablishmentId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("EstimatedDeliveryTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ObservationsForDelivery")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ObservationsForEstablishment")
-                        .HasColumnType("text");
-
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<string>("StatusObservations")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("SubTotal")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -283,9 +261,6 @@ namespace delivery.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Observations")
-                        .HasColumnType("text");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
@@ -346,11 +321,8 @@ namespace delivery.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -557,19 +529,15 @@ namespace delivery.Migrations
 
             modelBuilder.Entity("Delivery.Models.Product", b =>
                 {
-                    b.HasOne("Delivery.Models.Category", "Category")
+                    b.HasOne("Delivery.Models.Category", null)
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("Delivery.Models.Establishment", "Establishment")
                         .WithMany("Products")
                         .HasForeignKey("EstablishmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("Establishment");
                 });

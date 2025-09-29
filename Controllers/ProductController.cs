@@ -4,11 +4,12 @@ using Delivery.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Delivery.Dtos.Product;
 
 namespace Delivery.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "estabelecimento")]
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
@@ -34,10 +35,40 @@ namespace Delivery.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> Add(Product product)
+        public async Task<ActionResult<ProductResponseDto>> Add(ProductCreateDto dto)
         {
-            var created = await _productService.AddProductAsync(product);
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            // Recupera o id do usuário logado via token JWT
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Usuário não autenticado.");
+            if (!int.TryParse(userIdClaim.Value, out int userId))
+                return BadRequest("Id do usuário inválido.");
+
+            try
+            {
+                var created = await _productService.CreateProductAsync(dto, userId);
+                var response = new ProductResponseDto
+                {
+                    Id = created.Id,
+                    Name = created.Name,
+                    Description = created.Description,
+                    Price = created.Price,
+                    ImageUrl = created.ImageUrl
+                };
+                return CreatedAtAction(nameof(GetById), new { id = created.Id }, response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao cadastrar produto: {ex.Message}");
+            }
         }
     [HttpPost("upload-image")]
     [RequestSizeLimit(10_000_000)] // Limite de 10MB
