@@ -53,6 +53,9 @@ builder.Services.AddAuthentication(options =>
             ValidAudience = "DeliveryApi",
             IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("SuperSecretKey@345SuperSecretKey@345SuperSecretKey@345!")),
             RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            ValidAudience = "DeliveryApi",
+            IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("SuperSecretKey@345SuperSecretKey@345SuperSecretKey@345!")),
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
         };
     });
 

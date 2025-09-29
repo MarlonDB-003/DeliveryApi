@@ -187,6 +187,9 @@ namespace delivery.Migrations
                     b.Property<string>("EstablishmentName")
                         .HasColumnType("text");
 
+                    b.Property<string>("EstablishmentName")
+                        .HasColumnType("text");
+
                     b.Property<bool>("HasDeliveryPerson")
                         .HasColumnType("boolean");
 
