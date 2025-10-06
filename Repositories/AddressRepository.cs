@@ -9,6 +9,23 @@ namespace Delivery.Repositories
 {
     public class AddressRepository : IAddressRepository
     {
+        public async Task<Address?> UpdateAsync(int id, Address address)
+        {
+            var entity = await _context.Addresses.FindAsync(id);
+            if (entity == null) return null;
+            entity.UserId = address.UserId;
+            entity.EstablishmentId = address.EstablishmentId;
+            entity.Description = address.Description;
+            entity.Street = address.Street;
+            entity.Number = address.Number;
+            entity.Complement = address.Complement;
+            entity.Neighborhood = address.Neighborhood;
+            entity.City = address.City;
+            entity.State = address.State;
+            entity.ZipCode = address.ZipCode;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
         private readonly DeliveryContext _context;
         public AddressRepository(DeliveryContext context)
         {

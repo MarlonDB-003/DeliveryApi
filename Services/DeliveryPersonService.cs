@@ -11,6 +11,28 @@ namespace Delivery.Services
 {
     public class DeliveryPersonService : IDeliveryPersonService
     {
+        public async Task<DeliveryPerson?> UpdateDeliveryPersonAsync(int id, DeliveryPerson deliveryPerson)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (string.IsNullOrWhiteSpace(deliveryPerson.Name))
+                throw new ArgumentException("Nome do entregador é obrigatório.");
+            if (string.IsNullOrWhiteSpace(deliveryPerson.Phone))
+                throw new ArgumentException("Telefone do entregador é obrigatório.");
+            try
+            {
+                var updated = await _deliveryPersonRepository.UpdateAsync(id, deliveryPerson);
+                if (updated == null)
+                    throw new InvalidOperationException("Entregador não encontrado.");
+                _logger.LogInformation($"Entregador atualizado: {updated.Id} - {updated.Name}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar entregador {id}.");
+                throw new ApplicationException("Erro ao atualizar entregador.");
+            }
+        }
         private readonly IDeliveryPersonRepository _deliveryPersonRepository;
         private readonly ILogger<DeliveryPersonService> _logger;
 

@@ -9,6 +9,21 @@ namespace Delivery.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        public async Task<User?> UpdateAsync(int id, User user)
+        {
+            var existing = await _context.Users.FindAsync(id);
+            if (existing == null) return null;
+
+            existing.FullName = user.FullName;
+            existing.Email = user.Email;
+            existing.Phone = user.Phone;
+            existing.Password = user.Password;
+            existing.Address = user.Address;
+            existing.Role = user.Role;
+
+            await _context.SaveChangesAsync();
+            return existing;
+        }
         private readonly DeliveryContext _context;
         public UserRepository(DeliveryContext context)
         {

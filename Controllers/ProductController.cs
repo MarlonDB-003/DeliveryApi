@@ -13,6 +13,28 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] ProductUpdateDto dto)
+        {
+            try
+            {
+                var updated = await _productService.UpdateProductAsync(id, dto);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar produto: {ex.Message}");
+            }
+        }
         private readonly IProductService _productService;
         public ProductController(IProductService productService)
         {

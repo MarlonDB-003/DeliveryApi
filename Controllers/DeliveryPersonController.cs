@@ -12,6 +12,24 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class DeliveryPersonController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<DeliveryPerson>> Update(int id, [FromBody] DeliveryPerson deliveryPerson)
+        {
+            try
+            {
+                var updated = await _deliveryPersonService.UpdateDeliveryPersonAsync(id, deliveryPerson);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar entregador: {ex.Message}");
+            }
+        }
         private readonly IDeliveryPersonService _deliveryPersonService;
         public DeliveryPersonController(IDeliveryPersonService deliveryPersonService)
         {
@@ -34,9 +52,15 @@ namespace Delivery.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<DeliveryPerson>> Add(DeliveryPerson deliveryPerson)
+        public async Task<ActionResult<DeliveryPerson>> Add([FromBody] Delivery.Dtos.Delivery.DeliveryPersonDto dto)
         {
-            var created = await _deliveryPersonService.AddDeliveryPersonAsync(deliveryPerson);
+            var created = await _deliveryPersonService.AddDeliveryPersonAsync(new DeliveryPerson {
+                Name = dto.Name,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                Vehicle = dto.Vehicle,
+                ImageUrl = dto.ImageUrl
+            });
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

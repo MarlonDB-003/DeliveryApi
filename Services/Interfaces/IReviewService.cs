@@ -9,6 +9,7 @@ namespace Delivery.Services.Interfaces
     /// </summary>
     public interface IReviewService
     {
+        Task<Review?> UpdateReviewAsync(int id, Review review);
         Task<IEnumerable<Review>> GetAllReviewsAsync();
         Task<Review?> GetReviewByIdAsync(int id);
         Task<Review> AddReviewAsync(Review review);

@@ -15,6 +15,18 @@ namespace Delivery.Repositories
             _context = context;
         }
 
+        public async Task<OrderItem?> UpdateAsync(int id, OrderItem item)
+        {
+            var entity = await _context.OrderItems.FindAsync(id);
+            if (entity == null) return null;
+            entity.OrderId = item.OrderId;
+            entity.ProductId = item.ProductId;
+            entity.Quantity = item.Quantity;
+            entity.UnitPrice = item.UnitPrice;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
         public async Task<IEnumerable<OrderItem>> GetAllAsync()
         {
             return await _context.OrderItems.ToListAsync();

@@ -12,6 +12,24 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class OrderItemController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<OrderItem>> Update(int id, [FromBody] OrderItem item)
+        {
+            try
+            {
+                var updated = await _orderItemService.UpdateOrderItemAsync(id, item);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar item do pedido: {ex.Message}");
+            }
+        }
         private readonly IOrderItemService _orderItemService;
         public OrderItemController(IOrderItemService orderItemService)
         {

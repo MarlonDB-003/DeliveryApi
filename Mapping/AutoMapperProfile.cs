@@ -20,7 +20,15 @@ namespace Delivery.Mapping
 		{
 			// Exemplos de mapeamento
 			CreateMap<User, UserDto>().ReverseMap();
-			CreateMap<Product, ProductDto>().ReverseMap();
+			CreateMap<Product, ProductDto>()
+				.ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ProductType))
+				.ReverseMap();
+			CreateMap<Product, ProductCreateDto>()
+				.ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ProductType))
+				.ReverseMap();
+			CreateMap<Product, ProductUpdateDto>()
+				.ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.ProductType))
+				.ReverseMap();
 			CreateMap<Establishment, EstablishmentDto>().ReverseMap();
 			CreateMap<Establishment, EstablishmentResponseDto>().ReverseMap();
 			CreateMap<Establishment, EstablishmentDetailResponseDto>().ReverseMap();

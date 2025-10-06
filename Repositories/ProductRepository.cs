@@ -51,5 +51,21 @@ namespace Delivery.Repositories
             return await _context.Products
                 .FirstOrDefaultAsync(p => p.Name == name && p.EstablishmentId == establishmentId);
         }
+
+        public async Task<Product?> UpdateAsync(int id, Product product)
+        {
+            var existing = await _context.Products.FindAsync(id);
+            if (existing == null) return null;
+
+            existing.Name = product.Name;
+            existing.Description = product.Description;
+            existing.Price = product.Price;
+            existing.ImageUrl = product.ImageUrl;
+            existing.CategoryId = product.CategoryId;
+            existing.ProductType = product.ProductType;
+
+            await _context.SaveChangesAsync();
+            return existing;
+        }
     }
 }

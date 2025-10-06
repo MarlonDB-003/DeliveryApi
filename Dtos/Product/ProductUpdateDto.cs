@@ -1,7 +1,7 @@
 namespace Delivery.Dtos.Product
 {
     using System.ComponentModel.DataAnnotations;
-    public class ProductCreateDto
+    public class ProductUpdateDto
     {
         [Required(ErrorMessage = "O nome do produto é obrigatório.")]
         [StringLength(100, ErrorMessage = "O nome deve ter até 100 caracteres.")]

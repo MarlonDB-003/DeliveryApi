@@ -11,6 +11,26 @@ namespace Delivery.Services
 {
     public class AddressService : IAddressService
     {
+        public async Task<Address?> UpdateAddressAsync(int id, Address address)
+        {
+            if ((address.UserId == null || address.UserId <= 0) && (address.EstablishmentId == null || address.EstablishmentId <= 0))
+                throw new ArgumentException("Usuário ou estabelecimento do endereço é obrigatório.");
+            if (string.IsNullOrWhiteSpace(address.Description))
+                throw new ArgumentException("Descrição do endereço é obrigatória.");
+            try
+            {
+                var updated = await _addressRepository.UpdateAsync(id, address);
+                if (updated == null)
+                    throw new InvalidOperationException("Endereço não encontrado.");
+                _logger.LogInformation($"Endereço atualizado: {updated.Id}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar endereço {id}.");
+                throw new ApplicationException("Erro ao atualizar endereço.");
+            }
+        }
         private readonly IAddressRepository _addressRepository;
         private readonly ILogger<AddressService> _logger;
 

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Delivery.Controllers
 {
@@ -19,6 +20,7 @@ namespace Delivery.Controllers
         }
 
         [HttpPost("login")]
+        // TODO: Implementar rate limiting para login
         public IActionResult Login([FromBody] UserLoginDto dto)
         {
             try
@@ -67,7 +69,7 @@ namespace Delivery.Controllers
                     message = "Usuário cadastrado com sucesso.",
                     user = new {
                         user.Id,
-                        user.Name,
+                        user.FullName,
                         user.Email,
                         user.Phone,
                         user.Role
@@ -98,10 +100,11 @@ namespace Delivery.Controllers
 
     public class RegisterUserDto
     {
-        public string? FullName { get; set; }
-        public string? Email { get; set; }
-        public string? Phone { get; set; }
-        public string? Password { get; set; }
-        public string? Type { get; set; }
+    public string? FullName { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+    public string? Password { get; set; }
+    public string? Type { get; set; }
+    public string? Address { get; set; }
     }
 }

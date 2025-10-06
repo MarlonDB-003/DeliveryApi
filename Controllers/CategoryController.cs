@@ -8,10 +8,33 @@ using System.Threading.Tasks;
 namespace Delivery.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
-    public class CategoryController : ControllerBase
+    public class CategoryController : ControllerBase // Categorias podem ser públicas para consulta
     {
+        [HttpPut("{id}")]
+        [Authorize(Roles = "admin,estabelecimento")] // Apenas admins e estabelecimentos podem editar categorias
+        public async Task<ActionResult<Delivery.Dtos.Category.CategoryResponseDto>> Update(int id, [FromBody] Category category)
+        {
+            try
+            {
+                var updated = await _categoryService.UpdateCategoryAsync(id, category);
+                if (updated == null) return NotFound();
+                var dto = new Delivery.Dtos.Category.CategoryResponseDto {
+                    Id = updated.Id,
+                    Name = updated.Name,
+                    Description = updated.Description
+                };
+                return Ok(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar categoria: {ex.Message}");
+            }
+        }
         private readonly ICategoryService _categoryService;
         public CategoryController(ICategoryService categoryService)
         {

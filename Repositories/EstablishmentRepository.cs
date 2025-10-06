@@ -9,6 +9,26 @@ namespace Delivery.Repositories
 {
     public class EstablishmentRepository : IEstablishmentRepository
     {
+        public async Task<Establishment?> UpdateAsync(int id, Establishment establishment)
+        {
+            var existing = await _context.Establishments.FindAsync(id);
+            if (existing == null) return null;
+
+            existing.EstablishmentName = establishment.EstablishmentName;
+            existing.Description = establishment.Description;
+            existing.ImageUrl = establishment.ImageUrl;
+            existing.Address = establishment.Address;
+            existing.CategoryId = establishment.CategoryId;
+            existing.OpeningTime = establishment.OpeningTime;
+            existing.ClosingTime = establishment.ClosingTime;
+            existing.HasDeliveryPerson = establishment.HasDeliveryPerson;
+            existing.MinimumOrderValue = establishment.MinimumOrderValue;
+            existing.DeliveryFee = establishment.DeliveryFee;
+            existing.UserId = establishment.UserId;
+
+            await _context.SaveChangesAsync();
+            return existing;
+        }
         private readonly DeliveryContext _context;
         public EstablishmentRepository(DeliveryContext context)
         {

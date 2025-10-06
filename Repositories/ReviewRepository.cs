@@ -15,6 +15,18 @@ namespace Delivery.Repositories
             _context = context;
         }
 
+        public async Task<Review?> UpdateAsync(int id, Review review)
+        {
+            var entity = await _context.Reviews.FindAsync(id);
+            if (entity == null) return null;
+            entity.UserId = review.UserId;
+            entity.OrderId = review.OrderId;
+            entity.Rating = review.Rating;
+            entity.Comment = review.Comment;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
         public async Task<IEnumerable<Review>> GetAllAsync()
         {
             return await _context.Reviews.ToListAsync();

@@ -11,6 +11,28 @@ namespace Delivery.Services
 {
     public class CategoryService : ICategoryService
     {
+        public async Task<Category?> UpdateCategoryAsync(int id, Category category)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (string.IsNullOrWhiteSpace(category.Name))
+                throw new ArgumentException("Nome da categoria é obrigatório.");
+            if (string.IsNullOrWhiteSpace(category.Description))
+                throw new ArgumentException("Descrição da categoria é obrigatória.");
+            try
+            {
+                var updated = await _categoryRepository.UpdateAsync(id, category);
+                if (updated == null)
+                    throw new InvalidOperationException("Categoria não encontrada.");
+                _logger.LogInformation($"Categoria atualizada: {updated.Id} - {updated.Name}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar categoria {id}.");
+                throw new ApplicationException("Erro ao atualizar categoria.");
+            }
+        }
         private readonly ICategoryRepository _categoryRepository;
         private readonly ILogger<CategoryService> _logger;
 

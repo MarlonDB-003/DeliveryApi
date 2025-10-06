@@ -15,6 +15,17 @@ namespace Delivery.Repositories
             _context = context;
         }
 
+        public async Task<Category?> UpdateAsync(int id, Category category)
+        {
+            var entity = await _context.Categories.FindAsync(id);
+            if (entity == null) return null;
+            entity.Name = category.Name;
+            entity.Description = category.Description;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+        // ...existing code...
+
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();

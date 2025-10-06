@@ -7,6 +7,7 @@ namespace Delivery.Repositories.Interfaces
     /// </summary>
     public interface IOrderItemRepository
     {
+        Task<OrderItem?> UpdateAsync(int id, OrderItem item);
         /// <summary>
         /// Retorna todos os itens do pedido
         /// </summary>

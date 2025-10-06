@@ -24,5 +24,7 @@ namespace Delivery.Models
         public decimal DeliveryFee { get; set; }
 
         // Campos de autenticação
+        public string? Email { get; set; }
+        public string? PasswordHash { get; set; }
     }
 }

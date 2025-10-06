@@ -36,5 +36,9 @@ namespace Delivery.Repositories.Interfaces
         /// Busca um estabelecimento pelo ID do usuário
         /// </summary>
         Task<Establishment?> GetByUserIdAsync(int userId);
+        /// <summary>
+        /// Atualiza um estabelecimento existente
+        /// </summary>
+        Task<Establishment?> UpdateAsync(int id, Establishment establishment);
     }
 }

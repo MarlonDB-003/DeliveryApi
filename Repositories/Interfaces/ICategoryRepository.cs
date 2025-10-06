@@ -7,6 +7,7 @@ namespace Delivery.Repositories.Interfaces
     /// </summary>
     public interface ICategoryRepository
     {
+        Task<Category?> UpdateAsync(int id, Category category);
         /// <summary>
         /// Retorna todas as categorias
         /// </summary>

@@ -7,6 +7,7 @@ namespace Delivery.Repositories.Interfaces
     /// </summary>
     public interface ICouponRepository
     {
+        Task<Coupon?> UpdateAsync(int id, Coupon coupon);
         /// <summary>
         /// Retorna todos os cupons
         /// </summary>

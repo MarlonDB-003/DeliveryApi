@@ -7,6 +7,7 @@ namespace Delivery.Repositories.Interfaces
     /// </summary>
     public interface IDeliveryPersonRepository
     {
+        Task<DeliveryPerson?> UpdateAsync(int id, DeliveryPerson deliveryPerson);
         /// <summary>
         /// Retorna todos os entregadores
         /// </summary>

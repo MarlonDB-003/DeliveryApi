@@ -9,6 +9,7 @@ namespace Delivery.Services.Interfaces
     /// </summary>
     public interface IOrderItemService
     {
+        Task<OrderItem?> UpdateOrderItemAsync(int id, OrderItem item);
         Task<IEnumerable<OrderItem>> GetAllOrderItemsAsync();
         Task<OrderItem?> GetOrderItemByIdAsync(int id);
         Task<OrderItem> AddOrderItemAsync(OrderItem item);

@@ -9,6 +9,7 @@ namespace Delivery.Services.Interfaces
     /// </summary>
     public interface ICouponService
     {
+        Task<Coupon?> UpdateCouponAsync(int id, Coupon coupon);
         Task<IEnumerable<Coupon>> GetAllCouponsAsync();
         Task<Coupon?> GetCouponByIdAsync(int id);
         Task<Coupon> AddCouponAsync(Coupon coupon);

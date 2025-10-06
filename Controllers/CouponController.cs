@@ -12,6 +12,24 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class CouponController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Coupon>> Update(int id, [FromBody] Coupon coupon)
+        {
+            try
+            {
+                var updated = await _couponService.UpdateCouponAsync(id, coupon);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar cupom: {ex.Message}");
+            }
+        }
         private readonly ICouponService _couponService;
         public CouponController(ICouponService couponService)
         {

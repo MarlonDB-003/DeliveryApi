@@ -13,6 +13,38 @@ namespace Delivery.Controllers
         [Route("api/[controller]")]
     public class EstablishmentController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<EstablishmentDetailResponseDto>> Update(int id, [FromBody] EstablishmentDto dto)
+        {
+            try
+            {
+                var updated = await _establishmentService.UpdateEstablishmentAsync(id, dto);
+                if (updated == null) return NotFound();
+                var dtoResponse = new EstablishmentDetailResponseDto
+                {
+                    Id = updated.Id,
+                    Name = updated.EstablishmentName,
+                    Description = updated.Description,
+                    ImageUrl = updated.ImageUrl,
+                    Address = updated.Address,
+                    CategoryId = updated.CategoryId,
+                    OpeningTime = updated.OpeningTime,
+                    ClosingTime = updated.ClosingTime,
+                    HasDeliveryPerson = updated.HasDeliveryPerson,
+                    MinimumOrderValue = updated.MinimumOrderValue,
+                    DeliveryFee = updated.DeliveryFee
+                };
+                return Ok(dtoResponse);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar estabelecimento: {ex.Message}");
+            }
+        }
         private readonly IEstablishmentService _establishmentService;
         public EstablishmentController(IEstablishmentService establishmentService)
         {

@@ -37,5 +37,9 @@ namespace Delivery.Services.Interfaces
         /// Remove um usuário pelo ID
         /// </summary>
         Task<bool> DeleteUserAsync(int id);
+        /// <summary>
+        /// Atualiza um usuário existente
+        /// </summary>
+        Task<User?> UpdateUserAsync(int id, Delivery.Dtos.User.UserDto dto);
     }
 }

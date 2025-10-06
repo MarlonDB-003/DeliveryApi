@@ -11,6 +11,31 @@ namespace Delivery.Services
 {
     public class ReviewService : IReviewService
     {
+        public async Task<Review?> UpdateReviewAsync(int id, Review review)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (review.UserId <= 0)
+                throw new ArgumentException("Usuário da avaliação é obrigatório.");
+            if (!review.OrderId.HasValue || review.OrderId.Value <= 0)
+                throw new ArgumentException("Pedido da avaliação é obrigatório.");
+            if (review.Rating < 1 || review.Rating > 5)
+                throw new ArgumentException("Nota da avaliação deve ser entre 1 e 5.");
+            try
+            {
+                var updated = await _reviewRepository.UpdateAsync(id, review);
+                if (updated == null)
+                    throw new InvalidOperationException("Avaliação não encontrada.");
+                _logger.LogInformation($"Avaliação atualizada: {updated.Id}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar avaliação {id}.");
+                throw new ApplicationException("Erro ao atualizar avaliação.");
+            }
+        }
+
         private readonly IReviewRepository _reviewRepository;
         private readonly ILogger<ReviewService> _logger;
 

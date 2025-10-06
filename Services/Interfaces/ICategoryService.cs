@@ -9,6 +9,7 @@ namespace Delivery.Services.Interfaces
     /// </summary>
     public interface ICategoryService
     {
+        Task<Category?> UpdateCategoryAsync(int id, Category category);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(int id);
         Task<Category> AddCategoryAsync(Category category);

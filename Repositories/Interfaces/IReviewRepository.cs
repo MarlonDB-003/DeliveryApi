@@ -7,6 +7,7 @@ namespace Delivery.Repositories.Interfaces
     /// </summary>
     public interface IReviewRepository
     {
+        Task<Review?> UpdateAsync(int id, Review review);
         /// <summary>
         /// Retorna todas as avaliações
         /// </summary>

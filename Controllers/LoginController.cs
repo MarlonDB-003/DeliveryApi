@@ -29,7 +29,7 @@ namespace Delivery.Controllers
                 return Unauthorized("Usuário não encontrado.");
 
             var passwordHash = HashPassword(loginDto.Password);
-            if (user.PasswordHash != passwordHash)
+            if (user.Password != passwordHash)
                 return Unauthorized("Senha inválida.");
 
             var claims = new[]

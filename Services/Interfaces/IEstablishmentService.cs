@@ -18,5 +18,9 @@ namespace Delivery.Services.Interfaces
     /// Cadastra um estabelecimento e seu endereço completo
     /// </summary>
     Task<Establishment> RegisterEstablishmentAsync(Delivery.Dtos.Establishment.EstablishmentRegisterDto dto, int userId);
+        /// <summary>
+        /// Atualiza um estabelecimento existente
+        /// </summary>
+        Task<Establishment?> UpdateEstablishmentAsync(int id, Delivery.Dtos.Establishment.EstablishmentDto dto);
     }
 }

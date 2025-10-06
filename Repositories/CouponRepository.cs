@@ -15,6 +15,18 @@ namespace Delivery.Repositories
             _context = context;
         }
 
+        public async Task<Coupon?> UpdateAsync(int id, Coupon coupon)
+        {
+            var entity = await _context.Coupons.FindAsync(id);
+            if (entity == null) return null;
+            entity.Code = coupon.Code;
+            entity.Discount = coupon.Discount;
+            entity.ValidUntil = coupon.ValidUntil;
+            entity.IsActive = coupon.IsActive;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
         public async Task<IEnumerable<Coupon>> GetAllAsync()
         {
             return await _context.Coupons.ToListAsync();

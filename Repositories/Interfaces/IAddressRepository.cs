@@ -7,6 +7,7 @@ namespace Delivery.Repositories.Interfaces
     /// </summary>
     public interface IAddressRepository
     {
+        Task<Address?> UpdateAsync(int id, Address address);
         /// <summary>
         /// Retorna todos os endereços
         /// </summary>

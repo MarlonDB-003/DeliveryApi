@@ -12,5 +12,6 @@ namespace Delivery.Models
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string ProductType { get; set; } // "Normal", "Combo" ou "Promocao"
     }
 }

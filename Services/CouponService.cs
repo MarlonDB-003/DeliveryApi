@@ -11,6 +11,28 @@ namespace Delivery.Services
 {
     public class CouponService : ICouponService
     {
+        public async Task<Coupon?> UpdateCouponAsync(int id, Coupon coupon)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (string.IsNullOrWhiteSpace(coupon.Code))
+                throw new ArgumentException("Código do cupom é obrigatório.");
+            if (coupon.Discount <= 0)
+                throw new ArgumentException("Desconto do cupom deve ser maior que zero.");
+            try
+            {
+                var updated = await _couponRepository.UpdateAsync(id, coupon);
+                if (updated == null)
+                    throw new InvalidOperationException("Cupom não encontrado.");
+                _logger.LogInformation($"Cupom atualizado: {updated.Id} - {updated.Code}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar cupom {id}.");
+                throw new ApplicationException("Erro ao atualizar cupom.");
+            }
+        }
         private readonly ICouponRepository _couponRepository;
         private readonly ILogger<CouponService> _logger;
 

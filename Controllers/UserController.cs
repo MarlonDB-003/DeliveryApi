@@ -12,6 +12,24 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<User>> Update(int id, [FromBody] Delivery.Dtos.User.UserDto dto)
+        {
+            try
+            {
+                var updated = await _userService.UpdateUserAsync(id, dto);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar usuário: {ex.Message}");
+            }
+        }
         private readonly IUserService _userService;
         public UserController(IUserService userService)
         {
@@ -34,9 +52,17 @@ namespace Delivery.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Add(User user)
+        [AllowAnonymous] // Permite cadastro público de usuários
+        public async Task<ActionResult<User>> Add([FromBody] Delivery.Dtos.User.UserDto dto)
         {
-            var created = await _userService.AddUserAsync(user);
+            var created = await _userService.AddUserAsync(new User {
+                FullName = dto.FullName,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                Password = dto.Password,
+                Address = dto.Address,
+                Role = dto.Type
+            });
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

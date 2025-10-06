@@ -11,6 +11,43 @@ namespace Delivery.Services
 {
     public class ProductService : IProductService
     {
+        public async Task<Product?> UpdateProductAsync(int id, Delivery.Dtos.Product.ProductUpdateDto dto)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ArgumentException("O nome do produto é obrigatório.");
+            if (string.IsNullOrWhiteSpace(dto.Description))
+                throw new ArgumentException("A descrição do produto é obrigatória.");
+            if (dto.Price <= 0)
+                throw new ArgumentException("O preço do produto deve ser maior que zero.");
+            if (dto.CategoryId <= 0)
+                throw new ArgumentException("A categoria do produto é obrigatória.");
+
+            var product = new Product
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                ImageUrl = dto.ImageUrl,
+                CategoryId = dto.CategoryId,
+                ProductType = dto.ProductType
+            };
+
+            try
+            {
+                var updated = await _productRepository.UpdateAsync(id, product);
+                if (updated == null)
+                    throw new InvalidOperationException("Produto não encontrado.");
+                _logger.LogInformation($"Produto atualizado: {updated.Id} - {updated.Name}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar produto {id}.");
+                throw new ApplicationException("Erro ao atualizar produto.");
+            }
+        }
         private readonly IProductRepository _productRepository;
         private readonly IEstablishmentRepository _establishmentRepository;
         private readonly ICategoryRepository _categoryRepository;
@@ -120,7 +157,8 @@ namespace Delivery.Services
                     ImageUrl = dto.ImageUrl,
                     CategoryId = dto.CategoryId,
                     EstablishmentId = establishment.Id,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    ProductType = dto.ProductType
                 };
 
                 var created = await _productRepository.AddAsync(product);

@@ -7,5 +7,6 @@ namespace Delivery.Dtos.Product
         public string Description { get; set; }
         public decimal Price { get; set; }
         public string ImageUrl { get; set; }
+        public string ProductType { get; set; } // "Normal", "Combo" ou "Promocao"
     }
 }

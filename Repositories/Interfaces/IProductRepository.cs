@@ -36,5 +36,9 @@ namespace Delivery.Repositories.Interfaces
     /// Busca um produto pelo nome e estabelecimento
     /// </summary>
     Task<Product?> FindByNameAndEstablishmentAsync(string name, int establishmentId);
+        /// <summary>
+        /// Atualiza um produto existente
+        /// </summary>
+        Task<Product?> UpdateAsync(int id, Product product);
     }
 }

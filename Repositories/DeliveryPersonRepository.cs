@@ -15,6 +15,21 @@ namespace Delivery.Repositories
             _context = context;
         }
 
+        public async Task<DeliveryPerson?> UpdateAsync(int id, DeliveryPerson deliveryPerson)
+        {
+            var entity = await _context.DeliveryPeople.FindAsync(id);
+            if (entity == null) return null;
+            entity.Name = deliveryPerson.Name;
+            entity.Email = deliveryPerson.Email;
+            entity.Phone = deliveryPerson.Phone;
+            entity.Vehicle = deliveryPerson.Vehicle;
+            entity.ImageUrl = deliveryPerson.ImageUrl;
+            entity.Status = deliveryPerson.Status;
+            entity.UserId = deliveryPerson.UserId;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+
         public async Task<IEnumerable<DeliveryPerson>> GetAllAsync()
         {
             return await _context.DeliveryPeople.ToListAsync();

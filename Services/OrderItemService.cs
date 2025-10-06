@@ -11,6 +11,30 @@ namespace Delivery.Services
 {
     public class OrderItemService : IOrderItemService
     {
+        public async Task<OrderItem?> UpdateOrderItemAsync(int id, OrderItem item)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (item.OrderId <= 0)
+                throw new ArgumentException("Pedido do item é obrigatório.");
+            if (item.ProductId <= 0)
+                throw new ArgumentException("Produto do item é obrigatório.");
+            if (item.Quantity <= 0)
+                throw new ArgumentException("Quantidade do item deve ser maior que zero.");
+            try
+            {
+                var updated = await _orderItemRepository.UpdateAsync(id, item);
+                if (updated == null)
+                    throw new InvalidOperationException("Item do pedido não encontrado.");
+                _logger.LogInformation($"Item do pedido atualizado: {updated.Id}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar item do pedido {id}.");
+                throw new ApplicationException("Erro ao atualizar item do pedido.");
+            }
+        }
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly ILogger<OrderItemService> _logger;
 

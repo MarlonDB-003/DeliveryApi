@@ -12,6 +12,24 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class AddressController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Address>> Update(int id, [FromBody] Address address)
+        {
+            try
+            {
+                var updated = await _addressService.UpdateAddressAsync(id, address);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar endereço: {ex.Message}");
+            }
+        }
         private readonly IAddressService _addressService;
         public AddressController(IAddressService addressService)
         {
@@ -34,9 +52,19 @@ namespace Delivery.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Address>> Add(Address address)
+        public async Task<ActionResult<Address>> Add([FromBody] Delivery.Dtos.Address.AddressDto dto)
         {
-            var created = await _addressService.AddAddressAsync(address);
+            var created = await _addressService.AddAddressAsync(new Address {
+                UserId = dto.UserId,
+                Street = dto.Street,
+                Number = dto.Number,
+                Neighborhood = dto.Neighborhood,
+                City = dto.City,
+                State = dto.State,
+                ZipCode = dto.ZipCode,
+                Complement = dto.Complement,
+                IsMain = dto.IsMain
+            });
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

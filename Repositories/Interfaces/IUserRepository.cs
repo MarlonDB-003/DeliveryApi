@@ -31,5 +31,9 @@ namespace Delivery.Repositories.Interfaces
     /// Busca um usuário pelo e-mail
     /// </summary>
     Task<User?> FindByEmailAsync(string email);
+        /// <summary>
+        /// Atualiza um usuário existente
+        /// </summary>
+        Task<User?> UpdateAsync(int id, User user);
     }
 }

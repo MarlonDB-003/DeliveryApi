@@ -12,6 +12,24 @@ namespace Delivery.Controllers
     [Route("api/[controller]")]
     public class ReviewController : ControllerBase
     {
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Review>> Update(int id, [FromBody] Review review)
+        {
+            try
+            {
+                var updated = await _reviewService.UpdateReviewAsync(id, review);
+                if (updated == null) return NotFound();
+                return Ok(updated);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao atualizar avaliação: {ex.Message}");
+            }
+        }
         private readonly IReviewService _reviewService;
         public ReviewController(IReviewService reviewService)
         {
@@ -34,9 +52,17 @@ namespace Delivery.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Review>> Add(Review review)
+        public async Task<ActionResult<Review>> Add([FromBody] Delivery.Dtos.Review.ReviewDto dto)
         {
-            var created = await _reviewService.AddReviewAsync(review);
+            var created = await _reviewService.AddReviewAsync(new Review {
+                UserId = dto.UserId,
+                EstablishmentId = dto.EstablishmentId,
+                DeliveryPersonId = dto.DeliveryPersonId,
+                OrderId = dto.OrderId,
+                Rating = dto.Rating,
+                Comment = dto.Comment,
+                CreatedAt = dto.CreatedAt
+            });
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 

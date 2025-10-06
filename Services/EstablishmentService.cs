@@ -10,6 +10,53 @@ namespace Delivery.Services
 {
     public class EstablishmentService : IEstablishmentService
     {
+        public async Task<Establishment?> UpdateEstablishmentAsync(int id, Delivery.Dtos.Establishment.EstablishmentDto dto)
+        {
+            if (id <= 0)
+                throw new ArgumentException("Id inválido.");
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ArgumentException("O nome do estabelecimento é obrigatório.");
+            if (dto.CategoryId == null)
+                throw new ArgumentException("Categoria do estabelecimento é obrigatória.");
+            if (dto.OpeningTime == default)
+                throw new ArgumentException("Horário de abertura é obrigatório.");
+            if (dto.ClosingTime == default)
+                throw new ArgumentException("Horário de fechamento é obrigatório.");
+            if (dto.MinimumOrderValue < 0)
+                throw new ArgumentException("Valor mínimo para pedido não pode ser negativo.");
+            if (dto.DeliveryFee < 0)
+                throw new ArgumentException("Taxa de entrega não pode ser negativa.");
+
+            var establishment = new Establishment
+            {
+                EstablishmentName = dto.Name,
+                Description = dto.Description,
+                ImageUrl = dto.ImageUrl,
+                Address = dto.Address,
+                CategoryId = dto.CategoryId,
+                OpeningTime = dto.OpeningTime,
+                ClosingTime = dto.ClosingTime,
+                HasDeliveryPerson = dto.HasDeliveryPerson,
+                MinimumOrderValue = dto.MinimumOrderValue,
+                DeliveryFee = dto.DeliveryFee,
+                Email = dto.Email,
+                PasswordHash = dto.PasswordHash
+            };
+
+            try
+            {
+                var updated = await _establishmentRepository.UpdateAsync(id, establishment);
+                if (updated == null)
+                    throw new InvalidOperationException("Estabelecimento não encontrado.");
+                _logger.LogInformation($"Estabelecimento atualizado: {updated.Id} - {updated.EstablishmentName}");
+                return updated;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar estabelecimento {id}.");
+                throw new ApplicationException("Erro ao atualizar estabelecimento.");
+            }
+        }
         private readonly IEstablishmentRepository _establishmentRepository;
         private readonly IAddressService _addressService;
         private readonly ILogger<EstablishmentService> _logger;
